@@ -1,0 +1,56 @@
+{
+  "rooftop-solar": {
+    "provider": "Pexels",
+    "id": "9799994",
+    "page": "https://www.pexels.com/photo/9799994/",
+    "photographer": "Kindel Media",
+    "shows": "Solar panels on the roof of a commercial building",
+    "licence": "Pexels License (https://www.pexels.com/license/)",
+    "download": "https://images.pexels.com/photos/9799994/pexels-photo-9799994.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1440"
+  },
+  "safe-water": {
+    "provider": "Pexels",
+    "id": "928854",
+    "page": "https://www.pexels.com/photo/928854/",
+    "photographer": "Stephan Müller",
+    "shows": "A clear glass of drinking water on a wooden table",
+    "licence": "Pexels License (https://www.pexels.com/license/)",
+    "download": "https://images.pexels.com/photos/928854/pexels-photo-928854.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1440"
+  },
+  "solar-irrigation": {
+    "provider": "Pexels",
+    "id": "29519027",
+    "page": "https://www.pexels.com/photo/29519027/",
+    "photographer": "Ravinder Ravi",
+    "shows": "A farmer working on an irrigation pump in green farmland",
+    "licence": "Pexels License (https://www.pexels.com/license/)",
+    "download": "https://images.pexels.com/photos/29519027/pexels-photo-29519027.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1440"
+  },
+  "rural-solar": {
+    "provider": "Pexels",
+    "id": "4320475",
+    "page": "https://www.pexels.com/photo/4320475/",
+    "photographer": "K (Kelly)",
+    "shows": "Solar panels in a green countryside field",
+    "licence": "Pexels License (https://www.pexels.com/license/)",
+    "download": "https://images.pexels.com/photos/4320475/pexels-photo-4320475.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1440"
+  },
+  "low-emission-rice": {
+    "provider": "Unsplash",
+    "id": "photo-1597356420268-4289c0bbe55d",
+    "page": "https://unsplash.com/photos/OEJjBmy48Wg",
+    "photographer": "Tamim Arafat",
+    "shows": "Sunset over rice fields, Sonagazi, Bangladesh",
+    "licence": "Unsplash License (https://unsplash.com/license)",
+    "download": "https://images.unsplash.com/photo-1597356420268-4289c0bbe55d?auto=format&fit=crop&w=1920&h=1440&q=75"
+  },
+  "nepal-scoping": {
+    "provider": "Pexels",
+    "id": "34766893",
+    "page": "https://www.pexels.com/photo/34766893/",
+    "photographer": "BiZay Sunuwar",
+    "shows": "Green hills and villages in Nepal",
+    "licence": "Pexels License (https://www.pexels.com/license/)",
+    "download": "https://images.pexels.com/photos/34766893/pexels-photo-34766893.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1440"
+  }
+}

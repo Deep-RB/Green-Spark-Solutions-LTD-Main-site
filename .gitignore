@@ -1,0 +1,43 @@
+# Generated single-file review build (~15 MB, assets base64-inlined).
+# Rebuild from green-spark-website/ rather than tracking it.
+green-spark-preview.html
+
+# OS / editor cruft
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# OneDrive sync conflicts
+*-Copy.*
+*" - Copy".*
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.swp
+*~
+
+# Python tooling under tools/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# Node, if a build step is ever added
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Local build output
+dist/
+build/
+*.log

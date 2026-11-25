@@ -1,0 +1,15 @@
+/* ==========================================================================
+   Tabs (WAI-ARIA tabs pattern)
+   ========================================================================== */
+/* ---- Tabs ------------------------------------------------------------------ */
+.tabs__list { display: flex; gap: .25rem; border-bottom: 1px solid var(--gs-color-border-strong); overflow-x: auto; scrollbar-width: none; }
+.tabs__tab { position: relative; padding: .9rem 1.1rem; font-size: .9375rem; font-weight: var(--gs-fw-medium); color: var(--gs-color-text-muted); white-space: nowrap; display: inline-flex; gap: .5rem; align-items: center; border-radius: var(--gs-radius-sm) var(--gs-radius-sm) 0 0; }
+.tabs__tab:hover { color: var(--gs-color-text); background: rgba(11, 29, 23, .04); }
+.tabs__tab[aria-selected="true"] { color: var(--gs-color-text); }
+.tabs__tab::after { content: ""; position: absolute; left: .5rem; right: .5rem; bottom: -1px; height: 2px; background: var(--gs-ink-900); transform: scaleX(0); transition: transform var(--gs-dur) var(--gs-ease); }
+.tabs__tab[aria-selected="true"]::after { transform: scaleX(1); }
+.tabs__tab[disabled] { opacity: .4; cursor: not-allowed; }
+.tabs__count { font-size: var(--gs-fs-xs); padding: .05rem .45rem; border-radius: var(--gs-radius-pill); background: var(--gs-linen-200); font-variant-numeric: tabular-nums; }
+.tabs__panel { padding-top: 2rem; }
+.tabs__panel:focus-visible { outline-offset: 6px; }
+
