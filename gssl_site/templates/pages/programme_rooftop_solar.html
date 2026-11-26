@@ -16,6 +16,23 @@
     <div class="page-hero__actions"><a class="btn btn--primary " href="{% url 'website:enquire' %}"><span class="btn__label">Register your interest</span><svg class="icon icon-nudge" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.45 11.96C9.28 12.12 14.12 12.06 19.2 11.94M13.2 6.34C15.1 8.27 17.05 10.16 19.13 12.09M19.03 11.94C17.04 13.79 15.13 15.71 13.2 17.75"/></svg></a><a class="btn btn--outline-light " href="{% url 'website:projects' %}#pipeline"><span class="btn__label">All programmes</span><svg class="icon icon-nudge" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.45 11.96C9.28 12.12 14.12 12.06 19.2 11.94M13.2 6.34C15.1 8.27 17.05 10.16 19.13 12.09M19.03 11.94C17.04 13.79 15.13 15.71 13.2 17.75"/></svg></a></div>
   </div>
 </section>
+<section class="section" aria-labelledby="platform-video-title">
+  <div class="container-gs">
+    <div class="stack" data-reveal>
+      <p class="eyebrow" id="platform-video-title">The platform</p>
+      <h2>Rooftop solar, aggregated into one carbon programme</h2>
+    </div>
+    <figure class="media-figure mt-4" data-reveal>
+      <video class="media-figure__video" controls preload="none"
+             poster="{% static 'video/hero/gs-hero-poster.jpg' %}"
+             width="1920" height="1080">
+        <source src="{% static 'video/rooftop-solar-carbon-platform.mp4' %}" type="video/mp4">
+        Your browser cannot play this video.
+      </video>
+      <figcaption class="asof">How generation from many rooftops is measured, reported and verified as a single carbon programme.</figcaption>
+    </figure>
+  </div>
+</section>
 <section class="section anim-section" aria-labelledby="steps-title">
   <div class="container-gs">
     <div class="section-heading" data-reveal><p class="eyebrow">In three steps</p><h2 id="steps-title">How rooftop solar MRV works</h2></div>

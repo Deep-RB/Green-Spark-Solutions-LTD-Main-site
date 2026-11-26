@@ -37,3 +37,12 @@
   .hero, .page-hero { min-height: 0; color: #000; background: none; }
   body { background: #fff; }
 }
+
+/* ---- Media figure: an embedded video with a caption -------------------- */
+.media-figure { margin: 0; }
+.media-figure__video {
+  display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+  border-radius: var(--gs-radius-lg); background: var(--gs-ink-950);
+  box-shadow: var(--gs-shadow-md);
+}
+.media-figure figcaption { margin-top: var(--gs-space-3); }

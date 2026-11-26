@@ -1,4 +1,9 @@
 """
+RETIRED. The templates are now the source of truth: the site has diverged
+from the design build by design (frontend changes requested after conversion).
+Running this would overwrite those changes. Kept as the record of how the
+conversion was done.
+
 Convert the static design build into Django templates.
 
 Reads  : green-spark-website/website/*.html   (never written to)

@@ -1,4 +1,7 @@
 """
+RETIRED. The site has intentionally diverged from the design build, so this
+no longer passes and is no longer run in CI. Kept for reference.
+
 Prove every Django page still renders the same content as the design build.
 
 Compares each rendered page against ../green-spark-website/website/<page>.html

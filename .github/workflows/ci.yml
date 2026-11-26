@@ -51,9 +51,6 @@ jobs:
       - name: Every static reference resolves on disk
         run: python tools/check_static_refs.py
 
-      - name: Pages still match the design build
-        run: python tools/check_parity.py
-
   production-build:
     name: Production settings build
     runs-on: ubuntu-latest
