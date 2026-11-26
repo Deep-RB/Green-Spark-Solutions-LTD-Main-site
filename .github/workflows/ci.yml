@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   # Pull requests cover every branch under review; limiting push to the
