@@ -1,0 +1,15 @@
+/* ==========================================================================
+   Accordion (FAQ)
+   ========================================================================== */
+/* ---- Accordion (FAQ) -------------------------------------------------------- */
+.accordion { border-top: 1px solid var(--gs-color-border-strong); }
+.accordion__item { border-bottom: 1px solid var(--gs-color-border); }
+.accordion__trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.35rem 0; text-align: left; font-size: 1.125rem; letter-spacing: -.01em; color: inherit; }
+.accordion__trigger:hover { color: var(--gs-color-link); }
+.accordion__icon { flex: none; width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--gs-color-border-strong); transition: transform var(--gs-dur) var(--gs-ease), background-color var(--gs-dur-fast); }
+.accordion__trigger[aria-expanded="true"] .accordion__icon { transform: rotate(45deg); background: var(--gs-spark-400); border-color: var(--gs-spark-400); color: var(--gs-ink-900); }
+.accordion__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--gs-dur) var(--gs-ease); }
+.accordion__panel > div { overflow: hidden; }
+.accordion__panel.is-open { grid-template-rows: 1fr; }
+.accordion__content { padding: 0 3.5rem 1.5rem 0; color: var(--gs-color-text-muted); }
+.accordion__trigger[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }

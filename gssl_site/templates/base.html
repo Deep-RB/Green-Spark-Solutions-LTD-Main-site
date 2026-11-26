@@ -1,0 +1,85 @@
+{% load static %}<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block head_meta %}{% endblock %}
+  <meta name="theme-color" content="#0B1D17">
+  <link rel="icon" href="{% static 'img/favicon/favicon.ico' %}" sizes="32x32">
+  <link rel="icon" href="{% static 'img/favicon/favicon.svg' %}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'img/favicon/site.webmanifest' %}">
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/open-sauce-sans-regular-latin.woff2' %}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{% static 'fonts/open-sauce-sans-light-latin.woff2' %}" crossorigin>
+  {% block head_preload %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-5.3.3/bootstrap-grid.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/buttons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/slider.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/sections.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/cards.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/badges.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/stats.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/flow.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/forms.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/lightbox.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/tabs.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/accordion.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/map.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/misc.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/website.css' %}">
+  <script src="{% static 'js/components/core.js' %}" defer></script>
+  <script src="{% static 'js/components/nav.js' %}" defer></script>
+  <script src="{% static 'js/components/notice-bar.js' %}" defer></script>
+  <script src="{% static 'js/components/slider.js' %}" defer></script>
+  <script src="{% static 'js/components/hero-canvas.js' %}" defer></script>
+  <script src="{% static 'js/components/reveal.js' %}" defer></script>
+  <script src="{% static 'js/components/scroll-scenes.js' %}" defer></script>
+  <script src="{% static 'js/components/counters.js' %}" defer></script>
+  <script src="{% static 'js/components/map.js' %}" defer></script>
+  <script src="{% static 'js/components/lightbox.js' %}" defer></script>
+  <script src="{% static 'js/components/modal.js' %}" defer></script>
+  <script src="{% static 'js/components/tabs.js' %}" defer></script>
+  <script src="{% static 'js/components/accordion.js' %}" defer></script>
+  <script src="{% static 'js/components/forms.js' %}" defer></script>
+  <script src="{% static 'js/components/events.js' %}" defer></script>
+  <script src="{% static 'js/components/glow.js' %}" defer></script>
+  <script src="{% static 'js/components/media.js' %}" defer></script>
+  <script src="{% static 'js/components/showcase.js' %}" defer></script>
+  {% comment %}
+    Page-specific components. MUST stay above website.js: that file calls
+    GS.boot(), which runs every module registered up to that point. A module
+    registered after it never boots.
+  {% endcomment %}
+  {% block component_scripts %}{% endblock %}
+  <script src="{% static 'js/website.js' %}" defer></script>
+  {% block jsonld %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}{% if show_preview_ribbon %} is-preview{% endif %}" data-now="{% now 'Y-m-d' %}">
+{% include "partials/svg_sprite.html" %}
+{% include "partials/preloader.html" %}
+<a class="skip-link" href="#main">Skip to content</a>
+{% comment %}
+  .site-chrome is position:fixed and carries the header state that nav.js
+  toggles: .is-scrolled, .is-hidden, .menu-open. The spacer reserves its
+  height on pages without a dark hero. Both are required on every page.
+{% endcomment %}
+<div class="site-chrome" data-site-chrome>
+{% include "partials/site_topbar.html" %}
+{% include "partials/site_header.html" %}
+</div>
+<div class="site-chrome__spacer" aria-hidden="true"></div>
+{% include "partials/mobile_menu.html" %}
+
+<main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
+
+{% block cta %}{% include "partials/cta_band.html" %}{% endblock %}
+{% include "partials/site_footer.html" %}
+{% block modals %}{% endblock %}
+{% block body_end %}{% endblock %}
+{% if show_preview_ribbon %}{% include "partials/preview_ribbon.html" %}{% endif %}
+</body>
+</html>

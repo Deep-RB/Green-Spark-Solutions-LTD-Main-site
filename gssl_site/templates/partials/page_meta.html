@@ -1,0 +1,26 @@
+{% load static %}{% comment %}
+  Per-page <head> metadata: title, description, canonical and share cards.
+
+  Include it from a page's {% block head_meta %}:
+
+    {% include "partials/page_meta.html" with
+         title="Page title | Green Spark Solutions Australia"
+         description="One sentence, under ~160 characters."
+         og_image="img/illustrations/dawn-paddy-1280.jpg" %}
+
+  canonical_url and the share URLs are built from SITE_URL, so the domain is
+  configured once in settings and never written into a template.
+{% endcomment %}{% firstof canonical_path request.path as meta_path %}<title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <link rel="canonical" href="{{ site_url }}{{ meta_path }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site_name }}">
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:url" content="{{ site_url }}{{ meta_path }}">
+  <meta property="og:image" content="{{ site_url }}{% static og_image %}">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ description }}">
+  <meta name="twitter:image" content="{{ site_url }}{% static og_image %}">

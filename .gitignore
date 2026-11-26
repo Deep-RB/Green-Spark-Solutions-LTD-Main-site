@@ -24,13 +24,21 @@ $RECYCLE.BIN/
 *.swp
 *~
 
-# Python tooling under tools/
+# Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 .env
 .env.*
+!.env.example
+
+# Django (gssl_site/)
+gssl_site/db.sqlite3
+gssl_site/staticfiles/
+gssl_site/media/
+*.pot
+*.mo
 
 # Node, if a build step is ever added
 node_modules/

@@ -1,0 +1,7 @@
+# Green Spark Solutions Australia — website
+# Python 3.12+ recommended (tested on 3.14).
+
+Django>=5.2,<6.0          # 5.2 is the current LTS
+whitenoise>=6.9            # static files straight from the app server
+python-dotenv>=1.0         # reads .env in development
+gunicorn>=23.0 ; sys_platform != "win32"   # production WSGI server

@@ -1,0 +1,172 @@
+/* ==========================================================================
+   Green Spark — design tokens  (shared with the GSSL MRV platform)
+   Prefix: --gs-*   ·   Never hard-code a colour, size or duration in a component:
+   use a token from this file.  Version 1.0 · ThingBD · 2026-11
+   ========================================================================== */
+:root {
+  /* ---- Core palette -------------------------------------------------- */
+  /* Canopy ink: the near-black green used for text, dark sections, footer */
+  --gs-ink-950: #06130F;
+  --gs-ink-900: #0B1D17;
+  --gs-ink-800: #122A21;
+  --gs-ink-700: #1A3A2E;
+  --gs-ink-600: #24503F;
+
+  /* Leaf: the exact green of the GSSL logo (#00AC36) for the mark, icons, map; leaf-700 for green text */
+  --gs-leaf-100: #DDF2E3;
+  --gs-leaf-500: #00AC36;
+  --gs-leaf-600: #1A8C4A;
+  --gs-leaf-700: #157A3F;
+
+  /* Spark: the action colour. Always paired with ink text (14:1). */
+  --gs-spark-100: #F1FBD6;
+  --gs-spark-300: #D9F98E;
+  --gs-spark-400: #C4EE5A;
+  --gs-spark-500: #A8D63B;
+
+  /* WhatsApp: the main contact channel. White text on 700 is 5.3:1. */
+  --gs-whatsapp-700: #1F7A4D;
+  --gs-whatsapp-800: #186540;
+
+  /* Linen: warm neutrals for pages and surfaces */
+  --gs-linen-0: #FFFFFF;
+  --gs-linen-50: #FBFAF6;
+  --gs-linen-100: #F6F3EC;
+  --gs-linen-200: #ECE7DC;
+  --gs-linen-300: #DCD5C5;
+  --gs-linen-400: #C2BAA8;
+
+  /* Stone: secondary text */
+  --gs-stone-500: #5B635E;
+  --gs-stone-600: #454C48;
+
+  /* ---- Programme colours (always shown with the programme's name + icon) */
+  --gs-prog-cookstove: #E46A2E;   --gs-prog-cookstove-ink: #A9471A;   --gs-prog-cookstove-tint: #FBE6DA;
+  --gs-prog-water: #2C9AC7;       --gs-prog-water-ink: #1B6E92;       --gs-prog-water-tint: #DCEFF7;
+  --gs-prog-irrigation: #EDB21F;  --gs-prog-irrigation-ink: #85600A;  --gs-prog-irrigation-tint: #FBF0D2;
+  --gs-prog-rooftop: #5568E0;     --gs-prog-rooftop-ink: #3B4BB8;     --gs-prog-rooftop-tint: #E3E7FB;
+  --gs-prog-rural: #13A08F;       --gs-prog-rural-ink: #0D7468;       --gs-prog-rural-tint: #D9F1EE;
+  --gs-prog-rice: #94A834;        --gs-prog-rice-ink: #5F6C17;        --gs-prog-rice-tint: #EEF2D6;
+
+  /* ---- Status ------------------------------------------------------- */
+  --gs-success-700: #157A3F;  --gs-success-100: #E2F4E7;
+  --gs-warning-700: #8A5A06;  --gs-warning-100: #FFF1D6;
+  --gs-danger-700: #B2321F;   --gs-danger-100: #FCE8E4;
+  --gs-info-700: #1B6E92;     --gs-info-100: #E1F1F8;
+
+  /* ---- Semantic roles (components use these) ------------------------- */
+  --gs-color-bg: var(--gs-linen-100);
+  --gs-color-surface: var(--gs-linen-0);
+  --gs-color-surface-alt: var(--gs-linen-200);
+  --gs-color-text: var(--gs-ink-900);
+  --gs-color-text-muted: var(--gs-stone-500);
+  --gs-color-border: rgba(11, 29, 23, .12);
+  --gs-color-border-strong: rgba(11, 29, 23, .28);
+  --gs-color-primary: var(--gs-spark-400);
+  --gs-color-primary-hover: var(--gs-spark-300);
+  --gs-color-primary-active: var(--gs-spark-500);
+  --gs-color-on-primary: var(--gs-ink-900);
+  --gs-color-brand: var(--gs-leaf-500);
+  --gs-color-link: var(--gs-leaf-700);
+  --gs-color-focus: var(--gs-leaf-700);
+  --gs-color-inverse-bg: var(--gs-ink-900);
+  --gs-color-inverse-text: #F4F1E8;
+  --gs-color-inverse-muted: #C9C7BF;
+  --gs-color-inverse-border: rgba(244, 241, 232, .18);
+  --gs-color-overlay: rgba(6, 19, 15, .62);
+
+  /* ---- Typography --------------------------------------------------- */
+  --gs-font-sans: "Open Sauce Sans", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --gs-font-bn: "Hind Siliguri", "Noto Sans Bengali", var(--gs-font-sans); /* for the future Bangla version */
+  --gs-fw-light: 300;
+  --gs-fw-regular: 400;
+  --gs-fw-medium: 500;
+  --gs-fw-semibold: 600;
+  --gs-fs-display: clamp(2.5rem, 1.05rem + 5.4vw, 5rem);
+  --gs-fs-h1: clamp(2.25rem, 1.15rem + 4.1vw, 4.375rem);
+  --gs-fs-h2: clamp(1.75rem, 1.3rem + 1.9vw, 2.875rem);
+  --gs-fs-h3: clamp(1.375rem, 1.18rem + .8vw, 1.875rem);
+  --gs-fs-h4: clamp(1.125rem, 1.07rem + .25vw, 1.3125rem);
+  --gs-fs-lead: clamp(1.0625rem, 1rem + .35vw, 1.3125rem);
+  --gs-fs-body: 1rem;
+  --gs-fs-small: .875rem;
+  --gs-fs-xs: .75rem;
+  --gs-fs-stat: clamp(2.5rem, 1.5rem + 3.6vw, 4.5rem);
+  --gs-lh-tight: 1.08;
+  --gs-lh-snug: 1.22;
+  --gs-lh-body: 1.6;
+  --gs-ls-tight: -.025em;
+  --gs-ls-stat: -.05em;
+  --gs-ls-caps: .14em;
+
+  /* ---- Spacing (4px base) -------------------------------------------- */
+  --gs-space-1: .25rem;
+  --gs-space-2: .5rem;
+  --gs-space-3: .75rem;
+  --gs-space-4: 1rem;
+  --gs-space-5: 1.25rem;
+  --gs-space-6: 1.5rem;
+  --gs-space-8: 2rem;
+  --gs-space-10: 2.5rem;
+  --gs-space-12: 3rem;
+  --gs-space-16: 4rem;
+  --gs-space-20: 5rem;
+  --gs-space-24: 6rem;
+  --gs-space-32: 8rem;
+  --gs-section-y: clamp(4.5rem, 2.6rem + 6vw, 9rem);
+  --gs-gutter: clamp(1rem, .4rem + 2.2vw, 1.875rem);
+
+  /* ---- Layout ------------------------------------------------------- */
+  --gs-container: 1440px;
+  --gs-container-text: 46rem;
+  --gs-header-h: 80px;
+
+  /* ---- Radius ------------------------------------------------------- */
+  --gs-radius-xs: 3px;
+  --gs-radius-sm: 5px;
+  --gs-radius-md: 8px;
+  --gs-radius-lg: 14px;
+  --gs-radius-xl: 22px;
+  --gs-radius-pill: 999px;
+
+  /* ---- Elevation ---------------------------------------------------- */
+  --gs-shadow-sm: 0 1px 2px rgba(11, 29, 23, .06), 0 1px 1px rgba(11, 29, 23, .04);
+  --gs-shadow-md: 0 10px 30px -12px rgba(11, 29, 23, .22);
+  --gs-shadow-lg: 0 30px 70px -24px rgba(11, 29, 23, .42);
+
+  /* ---- Motion ------------------------------------------------------- */
+  --gs-ease: cubic-bezier(.65, 0, .35, 1);
+  --gs-ease-out: cubic-bezier(.16, 1, .3, 1);
+  --gs-ease-in: cubic-bezier(.55, 0, 1, .45);
+  --gs-dur-fast: .2s;
+  --gs-dur: .4s;
+  --gs-dur-slow: .8s;
+  --gs-dur-slide: 7s; /* hero slide interval */
+
+  /* ---- Layers ------------------------------------------------------- */
+  --gs-z-base: 1;
+  --gs-z-sticky: 50;
+  --gs-z-float: 90; /* floating WhatsApp button: under the header, menu and dialogs */
+  --gs-z-header: 100;
+  --gs-z-menu: 110;
+  --gs-z-modal: 200;
+  --gs-z-toast: 300;
+  --gs-z-ribbon: 400;
+}
+
+/* Dark surface scope: any section with .theme-dark re-maps the semantic roles */
+.theme-dark {
+  --gs-color-bg: var(--gs-ink-900);
+  --gs-color-surface: var(--gs-ink-800);
+  --gs-color-surface-alt: var(--gs-ink-700);
+  --gs-color-text: var(--gs-color-inverse-text);
+  --gs-color-text-muted: var(--gs-color-inverse-muted);
+  --gs-color-border: var(--gs-color-inverse-border);
+  --gs-color-border-strong: rgba(244, 241, 232, .4);
+  --gs-color-link: var(--gs-spark-400);
+  --gs-color-focus: var(--gs-spark-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --gs-dur-fast: 0s; --gs-dur: 0s; --gs-dur-slow: 0s; }
+}
