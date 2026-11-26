@@ -19,7 +19,7 @@
     <article data-glow class="post-feature" data-reveal>
       <a class="post-feature__media" href="{% url 'website:news_article' %}" tabindex="-1" aria-hidden="true"><picture><source type="image/webp" srcset="{% static 'img/photos/clean-cooking-480.webp' %} 480w, {% static 'img/photos/clean-cooking-960.webp' %} 960w, {% static 'img/photos/clean-cooking-1600.webp' %} 1600w" sizes="(min-width: 992px) 55vw, 100vw"><img src="{% static 'img/photos/clean-cooking-960.jpg' %}" srcset="{% static 'img/photos/clean-cooking-480.jpg' %} 480w, {% static 'img/photos/clean-cooking-960.jpg' %} 960w, {% static 'img/photos/clean-cooking-1600.jpg' %} 1600w" sizes="(min-width: 992px) 55vw, 100vw" width="960" height="720" alt="" loading="lazy" decoding="async"></picture></a>
       <div class="post-feature__body stack">
-        <div class="cluster"><span class="badge badge--priority">Featured</span><span class="badge badge--sample">Sample post</span></div>
+        <div class="cluster"><span class="badge badge--priority">Featured</span></div>
         <div class="post-card__meta"><span class="post-card__cat">News</span><time datetime="2026-11-20">20 November 2026</time><span>4 min read</span></div>
         <h2 class="post-feature__title glow-text" id="featured-title"><a href="{% url 'website:news_article' %}">Three priority programmes: clean cooking, rooftop solar MRV and safe drinking water</a></h2>
         <p class="lead glow-body">Why these three programmes lead our work, and how solar irrigation, rural productive-use solar and low-emission rice follow.</p>
@@ -41,7 +41,7 @@
 <!-- loop:end posts -->
     </div>
     <div class="empty-state" data-filter-empty hidden><p class="h4">No posts in this category yet</p><p class="text-muted-gs">Try another category.</p></div>
-    <div class="cluster mt-5"><span class="badge badge--sample">Sample posts</span><span class="small text-muted-gs">GSSL publishes posts from the admin (News &amp; Insights › Post).</span></div>
+    <div class="cluster mt-5"><span class="small text-muted-gs">GSSL publishes posts from the admin (News &amp; Insights › Post).</span></div>
   </div>
 </section>
 {% endblock %}
