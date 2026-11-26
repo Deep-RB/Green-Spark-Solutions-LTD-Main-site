@@ -44,8 +44,7 @@ PAGES: tuple[Page, ...] = (
 
     # Projects
     Page("projects", "projects/", "projects.html", nav="projects"),
-    Page("project_detail", "projects/green-ics-phase-1/", "project_detail.html",
-         nav="projects", sample=True),
+    # project_detail is slug-driven; see urls.py and content.py.
     Page("gallery", "gallery/", "gallery.html", nav="projects"),
     Page("gallery_album", "gallery/green-ics-installations-manikganj/",
          "gallery_album.html", nav="projects", sample=True),

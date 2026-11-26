@@ -26,6 +26,7 @@ from django.conf import settings  # noqa: E402
 from django.test import Client  # noqa: E402
 from django.urls import reverse  # noqa: E402
 
+from apps.website.content import PROJECTS  # noqa: E402
 from apps.website.pages import PAGES  # noqa: E402
 
 # Client() talks to "testserver"; outside the test runner that must be allowed.
@@ -52,10 +53,10 @@ def main() -> int:
     checked: set[str] = set()
     pages = 0
 
-    for page in PAGES:
-        if not page.name:
-            continue
-        url = reverse(f"website:{page.name}")
+    urls = [reverse(f"website:{p.name}") for p in PAGES if p.name]
+    urls += [reverse("website:project_detail", args=[pr.slug]) for pr in PROJECTS]
+
+    for url in urls:
         response = client.get(url)
         if response.status_code != 200:
             print(f"FAIL {url} -> HTTP {response.status_code}")
@@ -64,7 +65,7 @@ def main() -> int:
         for rel in static_paths(response.content.decode()):
             checked.add(rel)
             if not (STATIC_DIR / rel).is_file():
-                missing[rel].add(page.name)
+                missing[rel].add(url)
 
     print(f"{pages} pages rendered, {len(checked)} distinct static references checked")
     if missing:

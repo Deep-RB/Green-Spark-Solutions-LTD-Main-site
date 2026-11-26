@@ -7,8 +7,11 @@ When content models arrive, individual pages graduate out of this table into
 their own views without touching the templates.
 """
 
+from django.http import Http404
 from django.shortcuts import render
 from django.views.generic import TemplateView
+
+from .content import PROJECTS_BY_SLUG
 
 from .pages import Page
 
@@ -27,6 +30,22 @@ class StaticPageView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["nav_active"] = self.page.nav
         context["page_name"] = self.page.name
+        return context
+
+
+class ProjectDetailView(TemplateView):
+    """One page per project, from content.PROJECTS."""
+
+    template_name = "pages/project_detail.html"
+
+    def get_context_data(self, **kwargs):
+        project = PROJECTS_BY_SLUG.get(kwargs.get("slug"))
+        if project is None:
+            raise Http404("No such project")
+        context = super().get_context_data(**kwargs)
+        context["project"] = project
+        context["nav_active"] = "projects"
+        context["page_name"] = "project_detail"
         return context
 
 

@@ -13,6 +13,7 @@ from django.conf import settings
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 
+from .content import PROJECTS
 from .pages import PAGES
 
 ROUTED = [p for p in PAGES if p.name]
@@ -117,7 +118,9 @@ class NavigationTests(SimpleTestCase):
         """Every in-site href on the home page is a real route."""
         body = self.client.get(reverse("website:home")).content.decode()
         hrefs = {h.split("#")[0] for h in re.findall(r'href="(/[^"]*)"', body)}
-        known = {reverse(f"website:{p.name}") for p in ROUTED} | {"/404", "/"}
+        known = ({reverse(f"website:{p.name}") for p in ROUTED}
+                 | {reverse("website:project_detail", args=[pr.slug]) for pr in PROJECTS}
+                 | {"/404", "/"})
         for href in hrefs:
             if href.startswith(settings.STATIC_URL) or href.startswith(settings.MEDIA_URL):
                 continue
@@ -211,3 +214,52 @@ class TemplateFileTests(SimpleTestCase):
         ]
         self.assertEqual(culprits, [], "template(s) saved with a UTF-8 BOM")
 
+
+class ProjectPageTests(SimpleTestCase):
+    """
+    Every project has its own page. The design build shipped one detail page
+    holding Phase 1's content, and all seven cards pointed at it, so Phase 2
+    and Phase 3 opened Phase 1.
+    """
+
+    def test_every_project_has_its_own_page(self):
+        for project in PROJECTS:
+            with self.subTest(project=project.slug):
+                url = reverse("website:project_detail", args=[project.slug])
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+
+    def test_each_page_shows_its_own_details(self):
+        for project in PROJECTS:
+            with self.subTest(project=project.slug):
+                body = self.client.get(
+                    reverse("website:project_detail", args=[project.slug])
+                ).content.decode()
+                self.assertIn(project.location, body)
+                self.assertIn(project.stage, body)
+
+    def test_phase_2_and_3_are_not_phase_1(self):
+        bodies = {}
+        for slug in ("green-ics-phase-1", "green-ics-phase-2", "green-ics-phase-3"):
+            bodies[slug] = self.client.get(
+                reverse("website:project_detail", args=[slug])
+            ).content.decode()
+        def key_details(body):
+            start = body.find("key-details")
+            return body[start:body.find("</aside>", start)]
+
+        self.assertIn("Dhaka and Rajshahi", key_details(bodies["green-ics-phase-2"]))
+        self.assertNotIn("Dhaka and Rajshahi", key_details(bodies["green-ics-phase-1"]))
+        self.assertIn("Manikganj", key_details(bodies["green-ics-phase-1"]))
+        self.assertIn("districts to confirm", key_details(bodies["green-ics-phase-3"]))
+
+    def test_registry_link_only_where_there_is_a_gold_standard_id(self):
+        for project in PROJECTS:
+            with self.subTest(project=project.slug):
+                body = self.client.get(
+                    reverse("website:project_detail", args=[project.slug])
+                ).content.decode()
+                self.assertEqual("registry.goldstandard.org" in body, bool(project.gs_id))
+
+    def test_unknown_project_is_404(self):
+        self.assertEqual(self.client.get("/projects/not-a-project/").status_code, 404)
