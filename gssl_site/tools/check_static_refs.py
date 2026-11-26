@@ -1,5 +1,6 @@
 """
-Render every page and confirm each /static/ URL it references exists on disk.
+Render every published page and confirm each /static/ URL it references
+exists on disk. Pages marked OFFLINE in pages.py answer 404 and are skipped.
 
 Catches asset paths that survive conversion but would 404 in the browser.
 
@@ -34,7 +35,8 @@ if "testserver" not in settings.ALLOWED_HOSTS:
     settings.ALLOWED_HOSTS.append("testserver")
 
 STATIC_DIR = settings.STATICFILES_DIRS[0]
-REF = re.compile(r'(?:src|href|srcset|poster|content|data-src)="([^"]*)"')
+# Includes data-* attributes: the hero video and lightbox keep URLs there.
+REF = re.compile(r'(?:src|href|srcset|poster|content|data-[a-z-]+)="([^"]*)"')
 
 
 def static_paths(html: str) -> set[str]:
@@ -53,7 +55,7 @@ def main() -> int:
     checked: set[str] = set()
     pages = 0
 
-    urls = [reverse(f"website:{p.name}") for p in PAGES if p.name]
+    urls = [reverse(f"website:{p.name}") for p in PAGES if p.is_published]
     urls += [reverse("website:project_detail", args=[pr.slug]) for pr in PROJECTS]
 
     for url in urls:

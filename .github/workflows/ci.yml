@@ -45,6 +45,9 @@ jobs:
       - name: System checks
         run: python manage.py check
 
+      - name: Migrations match the models
+        run: python manage.py makemigrations --check --dry-run
+
       - name: Tests
         run: python manage.py test apps.website --verbosity 2
 
@@ -65,6 +68,7 @@ jobs:
       # are never committed - see gssl_site/.env.example.
       DJANGO_ALLOWED_HOSTS: ci.example.com
       DJANGO_SITE_URL: https://ci.example.com
+      DJANGO_DB_PATH: /tmp/gssl-ci/db.sqlite3
 
     steps:
       - uses: actions/checkout@v7
@@ -84,7 +88,11 @@ jobs:
         run: echo "DJANGO_SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(64))')" >> "$GITHUB_ENV"
 
       - name: Deployment checks
-        run: python manage.py check --deploy
+        # The same gate deploy/release.sh applies on the server.
+        run: python manage.py check --deploy --fail-level WARNING
+
+      - name: Migrate a fresh production database
+        run: python manage.py migrate --noinput
 
       - name: collectstatic
         # Also proves every url() inside the stylesheets resolves: the

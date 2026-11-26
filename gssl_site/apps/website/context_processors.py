@@ -14,5 +14,4 @@ def site(request):
     return {
         "site_url": settings.SITE_URL,
         "site_name": settings.SITE_NAME,
-        "show_preview_ribbon": settings.SHOW_PREVIEW_RIBBON,
     }

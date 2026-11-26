@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% block head_meta %}{% endblock %}
+  {% if noindex %}<meta name="robots" content="noindex">{% endif %}
   <meta name="theme-color" content="#0B1D17">
   <link rel="icon" href="{% static 'img/favicon/favicon.ico' %}" sizes="32x32">
   <link rel="icon" href="{% static 'img/favicon/favicon.svg' %}" type="image/svg+xml">
@@ -58,7 +59,7 @@
   <script src="{% static 'js/website.js' %}" defer></script>
   {% block jsonld %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}{% if show_preview_ribbon %} is-preview{% endif %}" data-now="{% now 'Y-m-d' %}">
+<body class="{% block body_class %}{% endblock %}" data-now="{% now 'Y-m-d' %}">
 {% include "partials/svg_sprite.html" %}
 {% include "partials/preloader.html" %}
 <a class="skip-link" href="#main">Skip to content</a>
@@ -80,6 +81,10 @@
 {% include "partials/site_footer.html" %}
 {% block modals %}{% endblock %}
 {% block body_end %}{% endblock %}
-{% if show_preview_ribbon %}{% include "partials/preview_ribbon.html" %}{% endif %}
+{% comment %}
+  RETIRED: the design build's "Design preview · sample data" ribbon. The live
+  site carries no sample banner. partials/preview_ribbon.html is kept only for
+  reference; nothing includes it.
+{% endcomment %}
 </body>
 </html>

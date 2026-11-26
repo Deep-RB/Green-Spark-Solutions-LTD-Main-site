@@ -1,0 +1,46 @@
+# systemd unit for the GSSL website.
+#
+# Assumes the layout in the Deployment section of gssl_site/README.md:
+#   /srv/gssl/app        this repository
+#   /srv/gssl/venv       the Python virtualenv
+#   /srv/gssl/data       the SQLite database (enquiries, admin login) - back it up
+#   /srv/gssl/static     collectstatic output, served by nginx
+#   /etc/gssl/gssl.env   the environment file (from .env.example), root:gssl, mode 640
+#
+# Install:
+#   sudo cp deploy/gssl.service /etc/systemd/system/gssl.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now gssl
+
+[Unit]
+Description=Green Spark Solutions website (gunicorn)
+After=network.target
+
+[Service]
+Type=notify
+NotifyAccess=main
+User=gssl
+Group=gssl
+WorkingDirectory=/srv/gssl/app/gssl_site
+EnvironmentFile=/etc/gssl/gssl.env
+Environment=DJANGO_SETTINGS_MODULE=config.settings.prod
+ExecStart=/srv/gssl/venv/bin/gunicorn config.wsgi:application -c deploy/gunicorn.conf.py
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the app may write only to its data directory.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/gssl/data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

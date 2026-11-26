@@ -1,7 +1,7 @@
 """Local development settings. Never used in production."""
 
 from .base import *  # noqa: F401,F403
-from .base import env_bool, env_list
+from .base import env_list
 
 DEBUG = True
 
@@ -16,7 +16,9 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
-# Show the design-build preview ribbon locally unless told otherwise.
-SHOW_PREVIEW_RIBBON = env_bool("DJANGO_SHOW_PREVIEW_RIBBON", True)
-
+# Enquiry emails are printed to the runserver console instead of being sent.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+ENQUIRY_EMAIL_ENABLED = True
+
+# Report CSP violations in the console without blocking Django's debug pages.
+CONTENT_SECURITY_POLICY_REPORT_ONLY = True
