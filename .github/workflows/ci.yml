@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   # Pull requests cover every branch under review; limiting push to the
@@ -29,9 +29,9 @@ jobs:
         working-directory: gssl_site
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -61,15 +61,15 @@ jobs:
 
     env:
       DJANGO_SETTINGS_MODULE: config.settings.prod
-      # CI-only values. The real ones live in the server's environment and are
-      # never committed — see gssl_site/.env.example.
+      # CI-only values. The real ones live in the server's environment and
+      # are never committed - see gssl_site/.env.example.
       DJANGO_ALLOWED_HOSTS: ci.example.com
       DJANGO_SITE_URL: https://ci.example.com
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
           cache: pip
@@ -87,6 +87,6 @@ jobs:
         run: python manage.py check --deploy
 
       - name: collectstatic
-        # Also proves every url() inside the stylesheets resolves: the manifest
-        # storage refuses to build when one does not.
+        # Also proves every url() inside the stylesheets resolves: the
+        # manifest storage refuses to build when one does not.
         run: python manage.py collectstatic --noinput
