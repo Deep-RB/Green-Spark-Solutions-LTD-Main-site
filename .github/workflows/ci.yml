@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    defaults:
+      run:
+        working-directory: gssl_site
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: gssl_site/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: System checks
+        run: python manage.py check
+
+      - name: Tests
+        run: python manage.py test apps.website --verbosity 2
+
+      - name: Every static reference resolves on disk
+        run: python tools/check_static_refs.py
+
+  production-build:
+    name: Production settings build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: gssl_site
+
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.prod
+      # CI-only values. The real ones live in the server's environment and are
+      # never committed — see gssl_site/.env.example.
+      DJANGO_ALLOWED_HOSTS: ci.example.com
+      DJANGO_SITE_URL: https://ci.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: gssl_site/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate a throwaway secret key
+        run: echo "DJANGO_SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(64))')" >> "$GITHUB_ENV"
+
+      - name: Deployment checks
+        run: python manage.py check --deploy
+
+      - name: collectstatic
+        # Also proves every url() inside the stylesheets resolves: the manifest
+        # storage refuses to build when one does not.
+        run: python manage.py collectstatic --noinput

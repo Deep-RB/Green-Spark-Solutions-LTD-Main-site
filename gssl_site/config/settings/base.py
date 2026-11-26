@@ -11,6 +11,16 @@ import os
 # gssl_site/config/settings/base.py -> gssl_site/
 BASE_DIR = Path(__file__).resolve().parents[2]
 
+# Load gssl_site/.env if it exists, so local work needs no shell setup.
+# Real environment variables always win; in production there is no .env file
+# and the server's own environment supplies everything.
+try:
+    from dotenv import load_dotenv
+except ImportError:  # dotenv is optional
+    pass
+else:
+    load_dotenv(BASE_DIR / ".env", override=False)
+
 
 def env(name: str, default: str = "") -> str:
     return os.environ.get(name, default)
