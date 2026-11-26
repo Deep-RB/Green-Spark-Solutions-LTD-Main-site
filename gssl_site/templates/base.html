@@ -61,9 +61,17 @@
 <body class="{% block body_class %}{% endblock %}{% if show_preview_ribbon %} is-preview{% endif %}" data-now="{% now 'Y-m-d' %}">
 {% include "partials/svg_sprite.html" %}
 {% include "partials/preloader.html" %}
-
+<a class="skip-link" href="#main">Skip to content</a>
+{% comment %}
+  .site-chrome is position:fixed and carries the header state that nav.js
+  toggles: .is-scrolled, .is-hidden, .menu-open. The spacer reserves its
+  height on pages without a dark hero. Both are required on every page.
+{% endcomment %}
+<div class="site-chrome" data-site-chrome>
 {% include "partials/site_topbar.html" %}
 {% include "partials/site_header.html" %}
+</div>
+<div class="site-chrome__spacer" aria-hidden="true"></div>
 {% include "partials/mobile_menu.html" %}
 
 <main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
@@ -71,6 +79,7 @@
 {% block cta %}{% include "partials/cta_band.html" %}{% endblock %}
 {% include "partials/site_footer.html" %}
 {% block modals %}{% endblock %}
+{% block body_end %}{% endblock %}
 {% if show_preview_ribbon %}{% include "partials/preview_ribbon.html" %}{% endif %}
 </body>
 </html>

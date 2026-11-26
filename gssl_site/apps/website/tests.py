@@ -6,6 +6,7 @@ present on every page, nothing leaks an unrendered template tag, and no page
 still points at the old ../assets/ paths.
 """
 
+import codecs
 import re
 
 from django.conf import settings
@@ -168,3 +169,45 @@ class PreviewRibbonTests(SimpleTestCase):
         with override_settings(SHOW_PREVIEW_RIBBON=True):
             body = self.client.get(reverse("website:home")).content.decode()
         self.assertIn("is-preview", body)
+
+class SiteChromeTests(SimpleTestCase):
+    """
+    Markup that lives between partials in the design build, so the partial
+    extractor never saw it. All of this went missing in the first conversion.
+    """
+
+    def test_every_page_has_the_skip_link(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                self.assertIn('<a class="skip-link" href="#main">Skip to content</a>', body)
+
+    def test_every_page_wraps_the_header_in_site_chrome(self):
+        """nav.js queries [data-site-chrome]; the CSS makes it position:fixed."""
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                self.assertIn('<div class="site-chrome" data-site-chrome>', body)
+                self.assertIn('<div class="site-chrome__spacer" aria-hidden="true"></div>', body)
+                chrome = body.index("data-site-chrome")
+                self.assertLess(chrome, body.index('class="site-topbar'))
+                self.assertLess(body.index("<header"), body.index("site-chrome__spacer"))
+
+    def test_lightbox_is_on_the_two_gallery_pages_only(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                expected = page.name in {"gallery_album", "project_detail"}
+                self.assertEqual("data-lightbox-root" in body, expected)
+
+
+class TemplateFileTests(SimpleTestCase):
+    def test_no_template_has_a_byte_order_mark(self):
+        """A BOM renders as a stray character at the top of the page."""
+        root = settings.BASE_DIR / "templates"
+        culprits = [
+            str(f.relative_to(root)) for f in root.rglob("*.html")
+            if f.read_bytes()[:3] == codecs.BOM_UTF8
+        ]
+        self.assertEqual(culprits, [], "template(s) saved with a UTF-8 BOM")
+

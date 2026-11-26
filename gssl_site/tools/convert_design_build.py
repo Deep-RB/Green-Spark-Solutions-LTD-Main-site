@@ -73,7 +73,7 @@ PAGES: dict[str, tuple[str, str, str]] = {
 CHROME = ["svg-sprite", "preloader", "site-topbar", "site-header", "mobile-menu",
           "site-footer", "preview-ribbon"]
 # Partials a page opts into.
-OPTIONAL = ["cta-band", "meet-gssl"]
+OPTIONAL_PARTIALS = ["cta-band", "meet-gssl"]
 # Partials nested inside another partial — emitted, but not stripped from pages.
 NESTED = ["social-links", "contact-details"]
 # Left inline in the page: every occurrence carries different event data.
@@ -287,7 +287,7 @@ def write_partials(pages: dict[str, str]) -> dict[str, str]:
     out = TEMPLATES / "partials"
     out.mkdir(parents=True, exist_ok=True)
     written = {}
-    for name in CHROME + OPTIONAL + NESTED:
+    for name in CHROME + OPTIONAL_PARTIALS + NESTED:
         if name == "social-links":
             body = build_social_links(pages)
         else:
@@ -298,6 +298,76 @@ def write_partials(pages: dict[str, str]) -> dict[str, str]:
         (out / PARTIAL_FILE[name]).write_text(text, encoding="utf-8")
         written[name] = text
     return written
+
+
+# --- body skeleton ----------------------------------------------------------
+# Everything inside <body> that is NOT a partial and NOT inside <main>.
+# base.html supplies this, so the converter verifies it: markup living between
+# partials is invisible to the partial extractor and was silently dropped once
+# already (the skip link, the .site-chrome wrapper and its spacer).
+
+PLACEHOLDER = re.compile(r"^\[\[[A-Za-z-]+\]\]$")
+
+SKELETON = [
+    "[[svg-sprite]]",
+    "[[preloader]]",
+    '<a class="skip-link" href="#main">Skip to content</a>',
+    '<div class="site-chrome" data-site-chrome>',
+    "[[site-topbar]]",
+    "[[site-header]]",
+    "</div>",
+    '<div class="site-chrome__spacer" aria-hidden="true"></div>',
+    "[[mobile-menu]]",
+    "[[MAIN]]",
+    "[[cta-band]]",      # optional
+    "[[site-footer]]",
+    "[[meet-gssl]]",     # optional
+    "[[BODY-END]]",      # optional raw markup, e.g. the lightbox dialog
+    "[[preview-ribbon]]",
+]
+OPTIONAL = {"[[cta-band]]", "[[meet-gssl]]", "[[BODY-END]]"}
+
+
+def body_skeleton(text: str, fn: str) -> tuple[list[str], str]:
+    """
+    Walk the body against SKELETON in order.
+
+    Order matters: raw body-end markup contains its own closing tags, so a
+    line-by-line match against the skeleton's literals would cut it in half.
+    """
+    body = text[text.index("<body"):text.index("</body>")]
+    body = body[body.index(">") + 1:]
+    for name in CHROME + OPTIONAL_PARTIALS:
+        for a, b, _ in reversed(find_blocks(body, name)):
+            body = body[:a] + "[[" + name + "]]" + body[b:]
+    a, b = body.index("<main"), body.index("</main>")
+    body = body[:a] + "[[MAIN]]" + body[b + len("</main>"):]
+
+    lines = [ln.strip() for ln in body.splitlines() if ln.strip()]
+    present: list[str] = []
+    raw: list[str] = []
+    i = 0
+    for token in SKELETON:
+        if token == "[[BODY-END]]":
+            while i < len(lines) and lines[i] != "[[preview-ribbon]]":
+                raw.append(lines[i])
+                i += 1
+            if raw:
+                present.append(token)
+        elif i < len(lines) and lines[i] == token:
+            present.append(token)
+            i += 1
+        elif token not in OPTIONAL:
+            got = lines[i] if i < len(lines) else "<end of body>"
+            fail(f"{fn}: body structure differs at line {i + 1}.\n"
+                 f"      expected {token}\n"
+                 f"      got      {got[:120]}\n"
+                 "      base.html renders this skeleton; markup outside a "
+                 "partial must be added there or carried by a block.")
+    if i != len(lines):
+        fail(f"{fn}: {len(lines) - i} line(s) of body markup left over, "
+             f"starting with {lines[i][:120]!r}")
+    return present, "\n".join(raw)
 
 
 # --- pages ------------------------------------------------------------------
@@ -347,6 +417,7 @@ def write_pages(pages: dict[str, str]) -> list[str]:
     out = TEMPLATES / "pages"
     out.mkdir(parents=True, exist_ok=True)
     notes = []
+    body_end_markup: dict[str, list[str]] = {}
 
     for fn, text in pages.items():
         url_name, template, nav = PAGES[fn]
@@ -358,7 +429,7 @@ def write_pages(pages: dict[str, str]) -> list[str]:
 
         main = page_main(text, fn)
         # Drop the partials base.html already renders; keep inline ones.
-        for name in OPTIONAL:
+        for name in OPTIONAL_PARTIALS:
             for a, b, _ in reversed(find_blocks(main, name)):
                 main = main[:a] + main[b:]
         for name in INLINE:
@@ -368,7 +439,14 @@ def write_pages(pages: dict[str, str]) -> list[str]:
             main = main.replace(f"<!-- partial:start {name} -->", "") \
                        .replace(f"<!-- partial:end {name} -->", "")
 
-        has = {name: bool(find_blocks(text, name)) for name in OPTIONAL}
+        has = {name: bool(find_blocks(text, name)) for name in OPTIONAL_PARTIALS}
+
+        # Verify nothing outside the partials is being dropped, and pick up
+        # any raw tail markup (the lightbox dialog on the two gallery pages).
+        _, body_end = body_skeleton(text, fn)
+        if body_end:
+            body_end = rewrite_links(rewrite_assets(body_end), fn)
+            body_end_markup.setdefault(body_end, []).append(fn)
 
         main = rewrite_links(rewrite_assets(main), fn)
         preloads = [rewrite_assets(p) for p in preloads]
@@ -392,11 +470,21 @@ def write_pages(pages: dict[str, str]) -> list[str]:
             parts.append("{% block cta %}{% endblock %}")
         if has["meet-gssl"]:
             parts.append('{% block modals %}{% include "partials/meet_gssl_modal.html" %}{% endblock %}')
+        if body_end:
+            parts.append('{% block body_end %}{% include "partials/lightbox.html" %}{% endblock %}')
         parts.append("")
         parts.append("{% block content %}" + main.rstrip() + "\n{% endblock %}")
 
         (out / template).write_text("\n".join(parts) + "\n", encoding="utf-8")
         notes.append(f"  pages/{template:44} <- {fn}")
+
+    if body_end_markup:
+        if len(body_end_markup) != 1:
+            fail(f"body-end markup differs between pages: "
+                 f"{[v for v in body_end_markup.values()]}")
+        markup, where = next(iter(body_end_markup.items()))
+        (TEMPLATES / "partials" / "lightbox.html").write_text(markup + chr(10), encoding="utf-8")
+        notes.append(f"  partials/lightbox.html{'':24} <- {', '.join(where)}")
     return notes
 
 
