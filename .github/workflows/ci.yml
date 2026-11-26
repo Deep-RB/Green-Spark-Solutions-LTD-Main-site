@@ -1,8 +1,10 @@
 name: CI
 
 on:
+  # Pull requests cover every branch under review; limiting push to the
+  # long-lived branches keeps a PR from running the same checks twice.
   push:
-    branches: ["**"]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
