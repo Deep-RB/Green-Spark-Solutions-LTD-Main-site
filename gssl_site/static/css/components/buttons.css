@@ -1,0 +1,79 @@
+/* ==========================================================================
+   Buttons, links, button groups
+   Pattern: 5px radius, 14px medium label, label "rolls" on hover (CIP-style),
+   arrow nudges. States: default · hover · focus · active · disabled · loading
+   ========================================================================== */
+.btn {
+  --btn-bg: transparent; --btn-fg: var(--gs-color-text); --btn-bd: transparent; --btn-bg-h: var(--btn-bg); --btn-fg-h: var(--btn-fg); --btn-bd-h: var(--btn-bd);
+  position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
+  min-height: 3rem; padding: 0 1.25rem; border-radius: var(--gs-radius-sm); border: 1px solid var(--btn-bd);
+  background: var(--btn-bg); color: var(--btn-fg); font-size: var(--gs-fs-small); font-weight: var(--gs-fw-medium); line-height: 1;
+  text-decoration: none; white-space: nowrap; cursor: pointer; user-select: none; overflow: hidden;
+  transition: background-color var(--gs-dur-fast) ease-in, color var(--gs-dur-fast) ease-in, border-color var(--gs-dur-fast) ease-in, transform var(--gs-dur-fast);
+}
+.btn__label { display: inline-block; position: relative; }
+.btn .icon { width: 1rem; height: 1rem; transition: transform var(--gs-dur) var(--gs-ease); }
+.btn:hover { background: var(--btn-bg-h); color: var(--btn-fg-h); border-color: var(--btn-bd-h); }
+.btn:hover .btn__label { animation: btn-roll .5s var(--gs-ease); }
+.btn:hover .icon-nudge { transform: translateX(3px); }
+.btn:hover .icon-nudge-up { transform: translate(2px, -2px); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--gs-color-focus); outline-offset: 3px; }
+.btn[disabled], .btn.is-disabled, .btn[aria-disabled="true"] { opacity: .38; cursor: not-allowed; pointer-events: none; }
+@keyframes btn-roll { 0% { transform: translateY(0); } 45% { transform: translateY(-140%); } 46% { transform: translateY(140%); } 100% { transform: translateY(0); } }
+
+/* Variants */
+.btn--primary { --btn-bg: var(--gs-color-primary); --btn-fg: var(--gs-color-on-primary); --btn-bd: var(--gs-color-primary); --btn-bg-h: var(--gs-color-primary-hover); --btn-bd-h: var(--gs-color-primary-hover); }
+.btn--primary:active { --btn-bg: var(--gs-color-primary-active); }
+.btn--secondary { --btn-bg: var(--gs-ink-900); --btn-fg: var(--gs-linen-50); --btn-bd: var(--gs-ink-900); --btn-bg-h: var(--gs-ink-700); --btn-bd-h: var(--gs-ink-700); }
+.theme-dark .btn--secondary { --btn-bg: var(--gs-linen-50); --btn-fg: var(--gs-ink-900); --btn-bd: var(--gs-linen-50); --btn-bg-h: var(--gs-spark-300); --btn-bd-h: var(--gs-spark-300); }
+.btn--outline { --btn-fg: var(--gs-color-text); --btn-bd: var(--gs-color-border-strong); --btn-bg-h: var(--gs-color-primary); --btn-fg-h: var(--gs-ink-900); --btn-bd-h: var(--gs-color-primary); }
+.btn--ghost { --btn-fg: var(--gs-color-text); padding-inline: .75rem; --btn-bg-h: rgba(11, 29, 23, .06); }
+.theme-dark .btn--ghost { --btn-bg-h: rgba(255, 255, 255, .08); }
+.btn--danger { --btn-bg: var(--gs-danger-700); --btn-fg: #fff; --btn-bd: var(--gs-danger-700); --btn-bg-h: #951f0f; --btn-bd-h: #951f0f; }
+.btn--whatsapp { --btn-bg: var(--gs-whatsapp-700); --btn-fg: #fff; --btn-bd: var(--gs-whatsapp-700); --btn-bg-h: var(--gs-whatsapp-800); --btn-bd-h: var(--gs-whatsapp-800); }
+.btn--call { --btn-bg: transparent; --btn-fg: var(--gs-color-text); --btn-bd: var(--gs-color-border-strong); --btn-bg-h: var(--gs-color-surface-alt); }
+.btn--sm { min-height: 2.25rem; padding: 0 .9rem; font-size: var(--gs-fs-xs); }
+.btn--lg { min-height: 3.5rem; padding: 0 1.6rem; font-size: 1rem; }
+.btn--block { width: 100%; }
+.btn--icon { width: 3rem; padding: 0; --btn-bd: var(--gs-color-border-strong); }
+.btn--icon.btn--sm { width: 2.25rem; }
+.btn--icon .icon { width: 1.15rem; height: 1.15rem; }
+.btn--round { border-radius: 50%; }
+
+/* Loading */
+.btn.is-loading { pointer-events: none; color: transparent !important; }
+.btn.is-loading::after {
+  content: ""; position: absolute; width: 1.1rem; height: 1.1rem; border-radius: 50%; border: 2px solid currentColor; border-color: var(--btn-fg) var(--btn-fg) transparent transparent;
+  animation: btn-spin .7s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Button group (segmented) */
+.btn-group { display: inline-flex; border: 1px solid var(--gs-color-border-strong); border-radius: var(--gs-radius-sm); padding: 3px; gap: 3px; background: var(--gs-color-surface); }
+.btn-group .btn { min-height: 2.25rem; border: 0; --btn-bg-h: var(--gs-color-surface-alt); }
+.btn-group .btn[aria-pressed="true"], .btn-group .btn.is-active { --btn-bg: var(--gs-ink-900); --btn-fg: var(--gs-linen-50); --btn-bg-h: var(--gs-ink-900); }
+
+/* ---- Links ---------------------------------------------------------- */
+.link { color: var(--gs-color-link); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); transition: text-decoration-color var(--gs-dur-fast); }
+.link:hover { text-decoration-color: currentColor; }
+.link-arrow {
+  display: inline-flex; align-items: center; gap: .55rem; color: var(--gs-color-text); font-weight: var(--gs-fw-medium); font-size: var(--gs-fs-small);
+  text-decoration: none; padding-block: .3rem; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size var(--gs-dur) var(--gs-ease);
+}
+.link-arrow .icon { width: 1rem; height: 1rem; transition: transform var(--gs-dur) var(--gs-ease); }
+.link-arrow:hover { background-size: 100% 1px; }
+.link-arrow:hover .icon { transform: translateX(4px); }
+.link-arrow--external:hover .icon { transform: translate(3px, -3px); }
+.link-arrow--light { color: var(--gs-linen-50); }
+.link-external::after { content: " ↗"; font-size: .85em; }
+
+/* Meet GSSL: play button that opens the intro video (modal) */
+.btn--meet { padding-left: .5rem; gap: .7rem; }
+.btn__play { position: relative; width: 2.15rem; height: 2.15rem; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--gs-ink-900); color: var(--gs-spark-400); transition: transform var(--gs-dur) var(--gs-ease-out); }
+.btn__play svg { width: 1.05rem; height: 1.05rem; fill: currentColor; margin-left: 2px; }
+.btn--meet:hover .btn__play { transform: scale(1.08); }
+@media (prefers-reduced-motion: no-preference) {
+  .btn__play::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid rgba(6, 19, 15, .4); animation: play-ring 2.2s ease-out infinite; }
+}
+@keyframes play-ring { from { transform: scale(.85); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }

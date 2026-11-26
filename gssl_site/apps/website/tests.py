@@ -1,0 +1,141 @@
+"""
+Smoke tests for the converted design build.
+
+These check the conversion itself: every route renders, the shared chrome is
+present on every page, nothing leaks an unrendered template tag, and no page
+still points at the old ../assets/ paths.
+"""
+
+import re
+
+from django.conf import settings
+from django.test import SimpleTestCase, override_settings
+from django.urls import reverse
+
+from .pages import PAGES
+
+ROUTED = [p for p in PAGES if p.name]
+
+
+class PageRenderTests(SimpleTestCase):
+    """Every page in the site map renders."""
+
+    def test_every_page_returns_200(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                response = self.client.get(reverse(f"website:{page.name}"))
+                self.assertEqual(response.status_code, 200)
+
+    def test_pages_carry_the_shared_chrome(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                self.assertIn('<header class="site-header"', body)
+                self.assertIn('<footer class="site-footer', body)
+                self.assertIn('id="gs-mark"', body)          # svg sprite
+                self.assertIn('<main id="main"', body)
+
+    def test_no_unrendered_template_tags(self):
+        leak = re.compile(r"\{%|\{\{")
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                self.assertIsNone(leak.search(body), "unrendered template syntax in output")
+
+    def test_no_design_build_asset_paths_remain(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                self.assertNotIn("../assets/", body)
+                self.assertIn(settings.STATIC_URL, body)
+
+    def test_no_links_to_raw_html_files(self):
+        """Internal links must go through {% url %}, not foo.html."""
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                stray = re.findall(r'href="(?!https?:)[^"]*?[a-z0-9-]+\.html[^"]*"', body)
+                self.assertEqual(stray, [], f"{page.name} still links to .html files")
+
+
+class MetadataTests(SimpleTestCase):
+    def test_each_page_has_a_unique_title_and_description(self):
+        titles, descriptions = {}, {}
+        for page in ROUTED:
+            body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+            title = re.search(r"<title>(.*?)</title>", body, re.S).group(1).strip()
+            desc = re.search(r'<meta name="description" content="(.*?)">', body, re.S).group(1)
+            self.assertTrue(title, f"{page.name} has an empty title")
+            self.assertTrue(desc, f"{page.name} has an empty description")
+            titles.setdefault(title, []).append(page.name)
+            descriptions.setdefault(desc, []).append(page.name)
+        dupes = {t: p for t, p in titles.items() if len(p) > 1}
+        self.assertEqual(dupes, {}, f"duplicate <title>: {dupes}")
+        dupes = {d: p for d, p in descriptions.items() if len(p) > 1}
+        self.assertEqual(dupes, {}, f"duplicate meta description: {dupes}")
+
+    def test_canonical_matches_the_page_url(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                url = reverse(f"website:{page.name}")
+                body = self.client.get(url).content.decode()
+                self.assertIn(f'<link rel="canonical" href="{settings.SITE_URL}{url}">', body)
+
+    def test_canonical_has_no_hard_coded_domain(self):
+        """The domain comes from SITE_URL, so overriding it moves every link."""
+        with override_settings(SITE_URL="https://example.test"):
+            body = self.client.get(reverse("website:home")).content.decode()
+        self.assertIn('href="https://example.test/"', body)
+        self.assertNotIn("gssl.thingbd.com", body)
+
+
+class NavigationTests(SimpleTestCase):
+    def test_nav_marks_the_current_section(self):
+        expected = {
+            "projects": "projects",
+            "news": "news",
+            "about": "about",
+            "why_gssl": "why-gssl",
+            "programme_rooftop_solar": "what-we-do",
+        }
+        for name, nav in expected.items():
+            with self.subTest(page=name):
+                body = self.client.get(reverse(f"website:{name}")).content.decode()
+                self.assertTrue(
+                    "is-current" in body or 'aria-current="page"' in body,
+                    f"{name} does not mark {nav} as current",
+                )
+
+    def test_home_marks_nothing_as_current(self):
+        body = self.client.get(reverse("website:home")).content.decode()
+        self.assertNotIn("is-current", body)
+
+    def test_internal_links_resolve(self):
+        """Every in-site href on the home page is a real route."""
+        body = self.client.get(reverse("website:home")).content.decode()
+        hrefs = {h.split("#")[0] for h in re.findall(r'href="(/[^"]*)"', body)}
+        known = {reverse(f"website:{p.name}") for p in ROUTED} | {"/404", "/"}
+        for href in hrefs:
+            if href.startswith(settings.STATIC_URL) or href.startswith(settings.MEDIA_URL):
+                continue
+            with self.subTest(href=href):
+                self.assertIn(href, known)
+
+
+class ErrorPageTests(SimpleTestCase):
+    def test_unknown_url_renders_the_404_page(self):
+        response = self.client.get("/no-such-page/")
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Page not found", response.content.decode())
+
+
+class PreviewRibbonTests(SimpleTestCase):
+    def test_ribbon_is_absent_when_disabled(self):
+        with override_settings(SHOW_PREVIEW_RIBBON=False):
+            body = self.client.get(reverse("website:home")).content.decode()
+        self.assertNotIn("is-preview", body)
+
+    def test_ribbon_is_present_when_enabled(self):
+        with override_settings(SHOW_PREVIEW_RIBBON=True):
+            body = self.client.get(reverse("website:home")).content.decode()
+        self.assertIn("is-preview", body)

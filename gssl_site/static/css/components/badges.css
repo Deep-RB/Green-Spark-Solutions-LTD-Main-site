@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Badges (status, type, programme stage) — text + shape, never colour alone
+   ========================================================================== */
+.badge {
+  --b-bg: var(--gs-linen-200); --b-fg: var(--gs-ink-900); --b-dot: currentColor;
+  display: inline-flex; align-items: center; gap: .4rem; padding: .28rem .6rem; border-radius: var(--gs-radius-pill);
+  background: var(--b-bg); color: var(--b-fg); font-size: var(--gs-fs-xs); font-weight: var(--gs-fw-medium); line-height: 1.25; white-space: nowrap;
+}
+.badge::before { content: ""; width: .45rem; height: .45rem; border-radius: 50%; background: var(--b-dot); flex: none; }
+.badge--nodot::before { display: none; }
+.badge--feedback { --b-bg: var(--gs-spark-400); --b-fg: var(--gs-ink-900); --b-dot: var(--gs-ink-900); }
+.badge--feedback::before { animation: badge-pulse 1.6s ease-in-out infinite; }
+.badge--upcoming { --b-bg: var(--gs-info-100); --b-fg: var(--gs-info-700); }
+.badge--closed { --b-bg: var(--gs-linen-300); --b-fg: var(--gs-stone-600); }
+.badge--closed::before { border-radius: 1px; }
+.badge--certification { --b-bg: var(--gs-warning-100); --b-fg: var(--gs-warning-700); }
+.badge--development { --b-bg: transparent; --b-fg: var(--gs-color-text); box-shadow: inset 0 0 0 1px var(--gs-color-border-strong); }
+.badge--development::before { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+.badge--active, .badge--registered { --b-bg: var(--gs-success-100); --b-fg: var(--gs-success-700); }
+.badge--registered::before { content: "✓"; width: auto; height: auto; background: none; font-size: .75rem; line-height: 1; }
+.badge--sample { --b-bg: repeating-linear-gradient(-45deg, #FFF1D6 0 6px, #FBE6BC 6px 12px); --b-fg: var(--gs-warning-700); }
+.badge--sample::before { display: none; }
+.badge--paused { --b-bg: var(--gs-danger-100); --b-fg: var(--gs-danger-700); }
+.badge--type { --b-bg: transparent; --b-fg: var(--gs-color-text-muted); box-shadow: inset 0 0 0 1px var(--gs-color-border); }
+.badge--type::before { display: none; }
+.badge--estimated { --b-bg: transparent; --b-fg: var(--gs-color-text-muted); box-shadow: inset 0 0 0 1px var(--gs-color-border-strong); font-style: italic; }
+.badge--estimated::before { display: none; }
+.badge--prog { --b-bg: var(--prog-tint); --b-fg: var(--prog-ink); --b-dot: var(--prog); }
+.theme-dark .badge--closed { --b-bg: rgba(255, 255, 255, .12); --b-fg: var(--gs-color-inverse-muted); }
+.theme-dark .badge--type { --b-fg: var(--gs-color-inverse-muted); }
+.theme-dark .badge--development { --b-fg: var(--gs-linen-50); }
+.badge--lg { font-size: var(--gs-fs-small); padding: .4rem .8rem; }
+@keyframes badge-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.badge--priority { --b-bg: var(--gs-spark-400); --b-fg: var(--gs-ink-900); --b-dot: var(--gs-ink-900); }
+
+/* ---- Gold Standard certification mark + registry link ----------------------
+   Transparent PNG/WebP: gold-standard-certified-sdg-impacts(.png|-on-dark.png) */
+.gs-logo { display: block; width: auto; height: 2.4rem; max-width: 100%; }
+.gs-logo--sm { height: 2rem; }
+.gs-logo--lg { height: 3rem; }
+.gs-reg { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; }
+.gs-reg .btn { position: relative; z-index: 2; }
+.gs-reg__id { font-size: var(--gs-fs-xs); letter-spacing: .04em; color: var(--gs-color-text-muted); font-variant-numeric: tabular-nums; }
+.btn--registry { --btn-fg: var(--gs-color-text); --btn-bd: var(--gs-color-border-strong); --btn-bg-h: var(--gs-color-primary); --btn-fg-h: #fff; --btn-bd-h: var(--gs-color-primary); }
+.theme-dark .btn--registry, .btn--registry.on-dark { --btn-fg: #FBFAF6; --btn-bd: rgba(251, 250, 246, .45); --btn-bg-h: var(--gs-spark-400); --btn-fg-h: var(--gs-ink-900); --btn-bd-h: var(--gs-spark-400); }
+.gs-cert { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem 2rem; align-items: center; padding: 1.75rem; border-radius: var(--gs-radius-md); background: var(--gs-color-surface); border: 1px solid var(--gs-color-border); }
+.gs-cert__body { display: grid; gap: .6rem; justify-items: start; }
+.gs-cert__body p { margin: 0; color: var(--gs-color-text-muted); }
+@media (max-width: 575.98px) { .gs-cert { grid-template-columns: 1fr; } }
+.fcard__cert { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.project-card__cert { margin-top: .9rem; }
+.project-card__foot.gs-reg { padding-top: 1rem; }

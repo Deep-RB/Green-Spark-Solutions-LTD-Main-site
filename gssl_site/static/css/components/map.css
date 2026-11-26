@@ -1,0 +1,37 @@
+/* ==========================================================================
+   "Where we work" — SVG district map with tooltip and list fallback
+   ========================================================================== */
+.bd-map { position: relative; }
+.bd-map__svg { width: 100%; height: auto; max-height: 44rem; margin-inline: auto; overflow: visible; }
+.bd-map__district { fill: var(--gs-linen-300); stroke: var(--gs-color-bg); stroke-width: .8; transition: fill var(--gs-dur-fast); }
+.bd-map__district.is-active { fill: var(--gs-leaf-500); cursor: pointer; }
+.bd-map__district.is-active:hover, .bd-map__district.is-active:focus-visible, .bd-map__district.is-hover { fill: var(--gs-ink-900); outline: none; }
+.theme-dark .bd-map__district { fill: rgba(244, 241, 232, .12); stroke: var(--gs-ink-900); }
+.theme-dark .bd-map__district.is-active { fill: var(--gs-spark-400); }
+.theme-dark .bd-map__district.is-active:hover, .theme-dark .bd-map__district.is-active:focus-visible { fill: #fff; }
+.js .bd-map__district.is-active { fill-opacity: 0; transition: fill-opacity .6s, fill var(--gs-dur-fast); }
+.js .bd-map.is-revealed .bd-map__district.is-active { fill-opacity: 1; }
+.bd-map__dot { fill: var(--gs-ink-900); stroke: #fff; stroke-width: 1.5; }
+.bd-map__pulse { fill: var(--gs-spark-400); opacity: .6; transform-origin: center; transform-box: fill-box; animation: map-pulse 2.2s ease-out infinite; }
+@keyframes map-pulse { 0% { transform: scale(.5); opacity: .8; } 100% { transform: scale(2.4); opacity: 0; } }
+.bd-map__tip { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; padding: .45rem .7rem; border-radius: var(--gs-radius-sm); background: var(--gs-ink-900); color: var(--gs-linen-50); font-size: var(--gs-fs-xs); white-space: nowrap; transform: translate(-50%, calc(-100% - 12px)); opacity: 0; transition: opacity var(--gs-dur-fast); box-shadow: var(--gs-shadow-md); }
+.bd-map__tip strong { display: block; font-size: var(--gs-fs-small); font-weight: var(--gs-fw-medium); }
+.bd-map__tip.is-visible { opacity: 1; }
+.bd-map__legend { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; font-size: var(--gs-fs-xs); color: var(--gs-color-text-muted); margin-top: 1rem; }
+.bd-map__legend span { display: inline-flex; align-items: center; gap: .45rem; }
+.bd-map__legend i { width: .85rem; height: .85rem; border-radius: 3px; background: var(--gs-linen-300); }
+.bd-map__legend i.is-active { background: var(--gs-leaf-500); }
+.bd-map__legend i.is-base { border-radius: 50%; background: var(--gs-ink-900); box-shadow: 0 0 0 3px var(--gs-spark-400); }
+.bd-map__list { margin-top: 1.25rem; }
+.bd-map__list summary { cursor: pointer; font-size: var(--gs-fs-small); font-weight: var(--gs-fw-medium); display: inline-flex; gap: .5rem; align-items: center; list-style: none; }
+.bd-map__list summary::-webkit-details-marker { display: none; }
+.bd-map__list summary .icon { transition: transform var(--gs-dur) var(--gs-ease); }
+.bd-map__list[open] summary .icon { transform: rotate(180deg); }
+.bd-map__list ul { columns: 2; column-gap: 1.5rem; margin-top: .85rem; font-size: var(--gs-fs-small); }
+.bd-map__list li { padding: .3rem 0; border-bottom: 1px solid var(--gs-color-border); break-inside: avoid; display: flex; justify-content: space-between; gap: .5rem; }
+.bd-map__list li span { color: var(--gs-color-text-muted); }
+.country-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.country-chip { display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .85rem; border-radius: var(--gs-radius-pill); border: 1px solid var(--gs-color-border-strong); font-size: var(--gs-fs-small); }
+.country-chip.is-primary { background: var(--gs-ink-900); color: var(--gs-linen-50); border-color: var(--gs-ink-900); }
+.country-chip small { color: var(--gs-color-text-muted); }
+.country-chip.is-primary small { color: var(--gs-spark-400); }
