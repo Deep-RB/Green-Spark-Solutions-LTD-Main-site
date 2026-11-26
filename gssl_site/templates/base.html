@@ -49,8 +49,13 @@
   <script src="{% static 'js/components/glow.js' %}" defer></script>
   <script src="{% static 'js/components/media.js' %}" defer></script>
   <script src="{% static 'js/components/showcase.js' %}" defer></script>
+  {% comment %}
+    Page-specific components. MUST stay above website.js: that file calls
+    GS.boot(), which runs every module registered up to that point. A module
+    registered after it never boots.
+  {% endcomment %}
+  {% block component_scripts %}{% endblock %}
   <script src="{% static 'js/website.js' %}" defer></script>
-  {% block head_scripts %}{% endblock %}
   {% block jsonld %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}{% if show_preview_ribbon %} is-preview{% endif %}" data-now="{% now 'Y-m-d' %}">

@@ -36,7 +36,9 @@ class PageRenderTests(SimpleTestCase):
                 self.assertIn('<main id="main"', body)
 
     def test_no_unrendered_template_tags(self):
-        leak = re.compile(r"\{%|\{\{")
+        # {# #} included: Django only treats it as a comment on ONE line, so a
+        # multi-line one renders as visible text.
+        leak = re.compile(r"\{%|\{\{|\{#")
         for page in ROUTED:
             with self.subTest(page=page.name):
                 body = self.client.get(reverse(f"website:{page.name}")).content.decode()
@@ -120,6 +122,33 @@ class NavigationTests(SimpleTestCase):
                 continue
             with self.subTest(href=href):
                 self.assertIn(href, known)
+
+
+class ScriptOrderTests(SimpleTestCase):
+    """
+    website.js calls GS.boot(), which runs every module registered up to that
+    point. A component script loaded after it registers too late and never
+    boots — which silently cost the home page its hero video once already.
+    """
+
+    def test_component_scripts_load_before_the_bootstrap(self):
+        for page in ROUTED:
+            with self.subTest(page=page.name):
+                body = self.client.get(reverse(f"website:{page.name}")).content.decode()
+                boot = body.find("js/website.js")
+                self.assertNotEqual(boot, -1, "website.js is missing")
+                after = [
+                    src for src in re.findall(r'<script src="([^"]*js/components/[^"]*)"', body)
+                    if body.find(src) > boot
+                ]
+                self.assertEqual(after, [], "component script loaded after website.js")
+
+    def test_home_loads_the_video_hero_module(self):
+        body = self.client.get(reverse("website:home")).content.decode()
+        self.assertIn("js/components/video-hero.js", body)
+        self.assertIn("data-vhero", body)
+        for attr in ("data-wide-webm", "data-wide-mp4", "data-tall-webm", "data-tall-mp4"):
+            self.assertIn(attr, body, f"hero video is missing {attr}")
 
 
 class ErrorPageTests(SimpleTestCase):

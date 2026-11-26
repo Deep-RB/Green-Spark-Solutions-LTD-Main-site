@@ -385,7 +385,9 @@ def write_pages(pages: dict[str, str]) -> list[str]:
         if preloads:
             parts.append("{% block head_preload %}\n  " + "\n  ".join(preloads) + "\n{% endblock %}")
         if scripts:
-            parts.append("{% block head_scripts %}\n  " + "\n  ".join(scripts) + "\n{% endblock %}")
+            # Goes in component_scripts, which base.html places above
+            # website.js — the file that boots every registered module.
+            parts.append("{% block component_scripts %}\n  " + "\n  ".join(scripts) + "\n{% endblock %}")
         if not has["cta-band"]:
             parts.append("{% block cta %}{% endblock %}")
         if has["meet-gssl"]:

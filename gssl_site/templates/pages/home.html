@@ -7,7 +7,7 @@
   <link rel="preload" as="image" href="{% static 'video/hero/gs-hero-poster.webp' %}" type="image/webp" media="(min-aspect-ratio: 4/5)" fetchpriority="high">
   <link rel="preload" as="image" href="{% static 'video/hero/gs-hero-mobile-poster.webp' %}" type="image/webp" media="(max-aspect-ratio: 4/5)" fetchpriority="high">
 {% endblock %}
-{% block head_scripts %}
+{% block component_scripts %}
   <script src="{% static 'js/components/video-hero.js' %}" defer></script>
 {% endblock %}
 {% block modals %}{% include "partials/meet_gssl_modal.html" %}{% endblock %}
